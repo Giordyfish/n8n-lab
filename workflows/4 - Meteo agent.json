@@ -1,0 +1,178 @@
+{
+  "name": "Meteo agent",
+  "nodes": [
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a helpful assistant. You can provide current temperature for the cities and coordinates for the cities.",
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -112,
+        608
+      ],
+      "id": "82dda13d-b8f1-4834-8136-743d702b5601",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        800
+      ],
+      "id": "31bf39ef-a7a9-429c-840b-93d90a4ace67",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "RlHHhX1r4dG9oig0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get the current weather for the specified coordinates",
+        "url": "=https://api.open-meteo.com/v1/forecast?current=temperature_2m&timezone=auto",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "latitude",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `The latitude for the temperature`, 'string') }}"
+            },
+            {
+              "name": "longitude",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `The longitudefor the temperature`, 'string') }}"
+            }
+          ]
+        },
+        "options": {},
+        "optimizeResponse": true,
+        "dataField": "=current",
+        "fieldsToInclude": "selected",
+        "fields": "=temperature_2m"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        80,
+        992
+      ],
+      "id": "e40b1310-2d04-452c-93e9-63d2c4af18bc",
+      "name": "Get temperature"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get city coordinates",
+        "url": "=https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `The city name of the request. Always pass the name of the city in english.`, 'string') }}"
+            }
+          ]
+        },
+        "options": {},
+        "optimizeResponse": true,
+        "dataField": "=results",
+        "fieldsToInclude": "selected",
+        "fields": "=latitude,longitude"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        -96,
+        992
+      ],
+      "id": "51ac50f5-f189-4829-90c1-be0900d70a89",
+      "name": "Get coordinates"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -288,
+        608
+      ],
+      "id": "e4f54a54-129f-4e03-bb8e-c5e165e1399b",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get temperature": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get coordinates": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8bdb7bc4-eabb-4814-8609-614577ac67ff",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7202bfe4c988b71f1b6c1bd2c81c5fe9d3fb62de58902fddccff46c03ef7a9c8"
+  },
+  "id": "KiUYbzrBxZwihDKU",
+  "tags": []
+}

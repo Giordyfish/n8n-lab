@@ -1,0 +1,447 @@
+{
+  "name": "Meteo agent demo",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -160
+      ],
+      "id": "9fd95887-7204-4c90-90e8-2e2c4965055b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4cc7fe8c-dfe8-4055-b582-63f4be715f2d",
+              "name": "city",
+              "value": "Rome",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        -160
+      ],
+      "id": "9e211945-190e-41e2-9022-e3416bde0644",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "MBBzls7gqHfftHwy",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/MBBzls7gqHfftHwy",
+          "cachedResultName": "Meteo demo"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "city": "={{ $json.city }}"
+          },
+          "matchingColumns": [
+            "city"
+          ],
+          "schema": [
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        -160
+      ],
+      "id": "79321bdb-4618-4481-a542-579f389d4da6",
+      "name": "Call 'Meteo demo'"
+    },
+    {
+      "parameters": {
+        "content": "## Sub workflow call ",
+        "height": 336,
+        "width": 1088
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -448,
+        -304
+      ],
+      "typeVersion": 1,
+      "id": "0aa7dc54-165b-49a2-9c2f-5448b54803b1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -448,
+        112
+      ],
+      "id": "f3755030-3dfa-476a-811c-eba561220963",
+      "name": "When chat message received",
+      "webhookId": "5e5eaed6-8481-4a30-857b-0b82decfdfc1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful assistant. You can provide current temperature for the cities",
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        112
+      ],
+      "id": "6ad238b7-9419-4d1f-87c4-b8512aadab8d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        304
+      ],
+      "id": "b79cb48e-b2ec-4d85-9d7e-161256c64e7d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "RlHHhX1r4dG9oig0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to get the current weather for the specified city.",
+        "workflowId": {
+          "__rl": true,
+          "value": "MBBzls7gqHfftHwy",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/MBBzls7gqHfftHwy",
+          "cachedResultName": "Meteo demo"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "city": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('city', `The city to checck the temperature of. Translate its name in english before usage.`, 'string') }}"
+          },
+          "matchingColumns": [
+            "city"
+          ],
+          "schema": [
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        304
+      ],
+      "id": "9a25e16f-ddcf-4254-a0f3-714b059bbe5a",
+      "name": "Call 'Meteo demo'1"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        432
+      ],
+      "id": "a8f8d571-7bc2-4537-938c-9f680628a3e7",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful assistant. You can provide current temperature for the cities and coordinates for the cities. Always answer in the user language.",
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -112,
+        608
+      ],
+      "id": "2bc7699f-3e07-47e2-b7c9-84f14023bdfd",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        800
+      ],
+      "id": "383fb07d-4424-4e80-8167-20ce53c49e00",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "RlHHhX1r4dG9oig0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        912
+      ],
+      "id": "6e26a089-a61e-418b-8c80-4bce5db2c5f5",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get the current weather for the specified coordinates",
+        "url": "=https://api.open-meteo.com/v1/forecast?current=temperature_2m&timezone=auto",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "latitude",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `The latitude for the temperature`, 'string') }}"
+            },
+            {
+              "name": "longitude",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `The longitudefor the temperature`, 'string') }}"
+            }
+          ]
+        },
+        "options": {},
+        "optimizeResponse": true,
+        "dataField": "=current",
+        "fieldsToInclude": "selected",
+        "fields": "=temperature_2m"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        288,
+        800
+      ],
+      "id": "98110441-53bc-481e-9e77-dbe5621fa301",
+      "name": "Get temperature"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Get city coordinates",
+        "url": "=https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `The city name of the request. Always pass the name of the city in english.`, 'string') }}"
+            }
+          ]
+        },
+        "options": {},
+        "optimizeResponse": true,
+        "dataField": "=results",
+        "fieldsToInclude": "selected",
+        "fields": "=latitude,longitude"
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        112,
+        800
+      ],
+      "id": "61fdec36-c919-4ed7-a892-1eff7b095888",
+      "name": "Get coordinates"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'Meteo demo'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Meteo demo'1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get temperature": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get coordinates": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "374e4691-5297-4499-84b4-c9990801bb8b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7202bfe4c988b71f1b6c1bd2c81c5fe9d3fb62de58902fddccff46c03ef7a9c8"
+  },
+  "id": "Vgmu5yK0KSli1ssK",
+  "tags": []
+}

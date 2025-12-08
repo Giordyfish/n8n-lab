@@ -1,0 +1,733 @@
+{
+  "name": "Meteo demo",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -592
+      ],
+      "id": "3f84ba5c-0f92-493f-b1d7-68108cd42162",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "city"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -624,
+        528
+      ],
+      "id": "0d0e052f-1a73-497b-bc32-00e3ecbe7f1f",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "content": "## Test nodes\nThese are some test nodes you can manually trigger to build your meteo tool. Move the manual trigger to activate different routes and modify input city to check what happens",
+        "height": 896,
+        "width": 1488
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -736,
+        -736
+      ],
+      "typeVersion": 1,
+      "id": "f31b61dc-d92a-429e-b738-c1585af89c58",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Error management",
+        "height": 96,
+        "width": 224,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        624,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "ef35591d-8dcb-400e-bedc-25efde6cd59f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Input from node",
+        "height": 96,
+        "width": 224,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "e75fabfd-e153-4f30-a3e7-9dfcb9fc7d12",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Simple, fixed temperature",
+        "height": 96,
+        "width": 224,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        624,
+        -592
+      ],
+      "typeVersion": 1,
+      "id": "4e1fb632-6936-4b2f-8ffc-1c4f6503d5e1",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=41.8919&longitude=12.5113&current=temperature_2m&timezone=auto",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -368,
+        -592
+      ],
+      "id": "020d418a-e573-405a-91d6-ed02e8fa2f2d",
+      "name": "Get current weather 0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a9af0fd-60a0-41f4-a893-e2a050975fa2",
+              "name": "temperature",
+              "value": "={{ $json.current.temperature_2m }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        -592
+      ],
+      "id": "2899f6c0-41c9-4ab6-b8f0-f708ee15cf76",
+      "name": "Parse temperature 0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a9af0fd-60a0-41f4-a893-e2a050975fa2",
+              "name": "city",
+              "value": "=Rome",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -400,
+        -400
+      ],
+      "id": "f5d34fdf-99be-41b7-903f-b0b92ca322fe",
+      "name": "Input city 1"
+    },
+    {
+      "parameters": {
+        "url": "=https://geocoding-api.open-meteo.com/v1/search?name={{ $json.city }}&count=1&language=en&format=json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -224,
+        -400
+      ],
+      "id": "1eea11ee-a362-4d5b-99a1-ae4204b31f9b",
+      "name": "Get coordinates 1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cded38be-504d-4e80-b696-a009d89cfff2",
+              "name": "latitude",
+              "value": "={{ $json.results[0].latitude }}",
+              "type": "number"
+            },
+            {
+              "id": "41d1157b-7cc6-4e71-97f7-969a17d94005",
+              "name": "longitude",
+              "value": "={{ $json.results[0].longitude }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        -400
+      ],
+      "id": "6845f027-485f-4143-a47a-a3403f857071",
+      "name": "Parse coordinates 1"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.open-meteo.com/v1/forecast?latitude={{ $json.latitude }}&longitude={{ $json.longitude }}&current=temperature_2m&timezone=auto",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        128,
+        -400
+      ],
+      "id": "56e35247-40c0-4093-b2b0-0766c2b39e3f",
+      "name": "Get current weather 1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a9af0fd-60a0-41f4-a893-e2a050975fa2",
+              "name": "temperature",
+              "value": "={{ $json.current.temperature_2m }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        -400
+      ],
+      "id": "0ac88e81-ade1-4dfd-9f5e-a636601f946e",
+      "name": "Parse temperature 1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a9af0fd-60a0-41f4-a893-e2a050975fa2",
+              "name": "city",
+              "value": "=Rome",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -432,
+        -176
+      ],
+      "id": "08a5a6a0-c361-47ae-81c4-d3482caed304",
+      "name": "Input city 2"
+    },
+    {
+      "parameters": {
+        "url": "=https://geocoding-api.open-meteo.com/v1/search?name={{ $json.city }}&count=1&language=en&format=json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -256,
+        -176
+      ],
+      "id": "36d72be9-e21a-4f1e-aca5-7f41e08034ba",
+      "name": "Get coordinates 2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cded38be-504d-4e80-b696-a009d89cfff2",
+              "name": "latitude",
+              "value": "={{ $json.results[0].latitude }}",
+              "type": "number"
+            },
+            {
+              "id": "41d1157b-7cc6-4e71-97f7-969a17d94005",
+              "name": "longitude",
+              "value": "={{ $json.results[0].longitude }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        -176
+      ],
+      "id": "f6e4f872-9c92-4981-84fe-e4ea4c00690e",
+      "name": "Parse coordinates 2"
+    },
+    {
+      "parameters": {
+        "errorMessage": "=Invalid latitude and longitude: {latitude:{{ $json.latitude || null}},longitude:{{ $json.longitude || null}}}"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -16
+      ],
+      "id": "9f2ac470-49b0-411e-b1eb-985337670738",
+      "name": "Stop and Error 2"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.open-meteo.com/v1/forecast?latitude={{ $json.latitude }}&longitude={{ $json.longitude }}&current=temperature_2m&timezone=auto",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        256,
+        -176
+      ],
+      "id": "4d931667-afa3-47dc-a226-b590c4918082",
+      "name": "Get current weather 2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a9af0fd-60a0-41f4-a893-e2a050975fa2",
+              "name": "temperature",
+              "value": "={{ $json.current.temperature_2m }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        -176
+      ],
+      "id": "65813055-9e34-42ac-a440-5e3b7fd30572",
+      "name": "Parse temperature 2"
+    },
+    {
+      "parameters": {
+        "url": "=https://geocoding-api.open-meteo.com/v1/search?name={{ $json.city }}&count=1&language=en&format=json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -400,
+        528
+      ],
+      "id": "2ce5600f-9c54-4dd3-ab4d-ced7e2501a49",
+      "name": "Get coordinates"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cded38be-504d-4e80-b696-a009d89cfff2",
+              "name": "latitude",
+              "value": "={{ $json.results[0].latitude }}",
+              "type": "number"
+            },
+            {
+              "id": "41d1157b-7cc6-4e71-97f7-969a17d94005",
+              "name": "longitude",
+              "value": "={{ $json.results[0].longitude }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        528
+      ],
+      "id": "c64a8943-3bb1-427d-b017-1296174e6099",
+      "name": "Parse coordinates"
+    },
+    {
+      "parameters": {
+        "errorMessage": "=Invalid latitude and longitude: {latitude:{{ $json.latitude || \"null\" }},longitude:{{ $json.longitude || \"null\" }}}"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        272,
+        624
+      ],
+      "id": "fbe627d9-ff04-4b4a-907e-1a1073f1d06c",
+      "name": "Stop and Error "
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3bf891a4-81da-4bee-ae0f-48537c4ce642",
+              "leftValue": "={{ $json.latitude }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ff4488e8-2242-41c8-b4b8-cf4748ed78f6",
+              "leftValue": "={{ $json.longitude }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        -176
+      ],
+      "id": "4761c8fd-34b4-4719-ab61-d12a5f661a99",
+      "name": "If 2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3bf891a4-81da-4bee-ae0f-48537c4ce642",
+              "leftValue": "={{ $json.latitude }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ff4488e8-2242-41c8-b4b8-cf4748ed78f6",
+              "leftValue": "={{ $json.longitude }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        528
+      ],
+      "id": "4d2b4efb-e990-4aa4-a339-499d2673402a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.open-meteo.com/v1/forecast?latitude={{ $json.latitude }}&longitude={{ $json.longitude }}&current=temperature_2m&timezone=auto",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        272,
+        432
+      ],
+      "id": "01f47732-9ec1-4683-96cd-f2176c0d4848",
+      "name": "Get current weather"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a9af0fd-60a0-41f4-a893-e2a050975fa2",
+              "name": "temperature",
+              "value": "={{ $json.current.temperature_2m }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        432
+      ],
+      "id": "6d9372b0-5b2a-406f-834f-b95043cd9b00",
+      "name": "Parse temperature"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get coordinates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current weather 0": {
+      "main": [
+        [
+          {
+            "node": "Parse temperature 0",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input city 1": {
+      "main": [
+        [
+          {
+            "node": "Get coordinates 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get coordinates 1": {
+      "main": [
+        [
+          {
+            "node": "Parse coordinates 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse coordinates 1": {
+      "main": [
+        [
+          {
+            "node": "Get current weather 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current weather 1": {
+      "main": [
+        [
+          {
+            "node": "Parse temperature 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input city 2": {
+      "main": [
+        [
+          {
+            "node": "Get coordinates 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get coordinates 2": {
+      "main": [
+        [
+          {
+            "node": "Parse coordinates 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse coordinates 2": {
+      "main": [
+        [
+          {
+            "node": "If 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current weather 2": {
+      "main": [
+        [
+          {
+            "node": "Parse temperature 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get coordinates": {
+      "main": [
+        [
+          {
+            "node": "Parse coordinates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse coordinates": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If 2": {
+      "main": [
+        [
+          {
+            "node": "Get current weather 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get current weather",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current weather": {
+      "main": [
+        [
+          {
+            "node": "Parse temperature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cedb4c96-64c5-46c0-84ec-68744c3b2a58",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7202bfe4c988b71f1b6c1bd2c81c5fe9d3fb62de58902fddccff46c03ef7a9c8"
+  },
+  "id": "MBBzls7gqHfftHwy",
+  "tags": []
+}
