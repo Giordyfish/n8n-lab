@@ -12,7 +12,6 @@ services:
       - KAFKA_BROKERS=kafka:9092
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./local-files:/files
     depends_on:
       kafka:
         condition: service_healthy
@@ -55,3 +54,4 @@ services:
 volumes:
   n8n_data:
   kafka_data:
+
